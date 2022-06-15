@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>io.smilego</groupId>
+	<artifactId>onboarding-certify-service</artifactId>
+	<version>1.6.4</version>
+	<packaging>jar</packaging>
+	<name>Smile GO - Onboarding Certify Service</name>
+	<description>Microservico responsável por integrar a plataforma Onboarding à API da VSOFT.</description>
+
+	<parent>
+		<groupId>io.micronaut</groupId>
+		<artifactId>micronaut-parent</artifactId>
+		<version>3.0.2</version>
+	</parent>
+
+	<properties>
+		<packaging>jar</packaging>
+		<jdk.version>1.8</jdk.version>
+		<!-- If you are building with JDK 9 or higher, you can uncomment the lines 
+			below to set the release version -->
+		<!-- <release.version>8</release.version> -->
+		<micronaut.version>3.0.2</micronaut.version>
+		<exec.mainClass>io.smilego.onboarding.certify.service.api.Application</exec.mainClass>
+		<micronaut.runtime>netty</micronaut.runtime>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-inject</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-validation</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.test</groupId>
+			<artifactId>micronaut-test-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-client</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-server-netty</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-runtime</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.rabbitmq</groupId>
+			<artifactId>micronaut-rabbitmq</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-jwt</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>6.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.32</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.discovery</groupId>
+			<artifactId>micronaut-discovery-client</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>io.micronaut.build</groupId>
+				<artifactId>micronaut-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<!-- Uncomment to enable incremental compilation -->
+					<!-- <useIncrementalCompilation>false</useIncrementalCompilation> -->
+
+					<annotationProcessorPaths
+						combine.children="append">
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-http-validation</artifactId>
+							<version>${micronaut.version}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut.security</groupId>
+							<artifactId>micronaut-security-annotations</artifactId>
+							<version>${micronaut.security.version}</version>
+						</path>
+					</annotationProcessorPaths>
+					<compilerArgs>
+						<arg>-Amicronaut.processing.group=tech.dock.connect.onboarding.certify.service</arg>
+						<arg>-Amicronaut.processing.module=api</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

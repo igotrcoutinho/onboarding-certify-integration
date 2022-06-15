@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  metabase-secrets:
+    image: metabase/metabase:latest
+    container_name: smilego-kappta-metabase
+    ports:
+      - 3000:3000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: smilego_metabase
+      MB_DB_PORT: 5432
+      MB_DB_USER: smilego
+      MB_DB_PASS: smilego
+      MB_DB_HOST: host.docker.internal

@@ -1,0 +1,41 @@
+---
+micronaut:
+  application:
+    name: smilego-kappta-certify-service
+  server:
+    port: 8161
+  executors:
+    unico-listener:
+      type: fixed
+      number-of-threads: 20
+rabbitmq:
+  host: ec2-18-188-120-138.us-east-2.compute.amazonaws.com
+  port: 5672
+  username: smilego
+  password: smilego
+  listener:
+    simple:
+      concurrency: 10
+      max-concurrency: 20
+      prefetch: 1
+
+kappta-services:
+  arquivo: https://kappta.smilego.io/api-gateway/arquivo
+
+certify:
+  url: https://gateway.certfy.tech
+  authentication:
+    apiKey: 1d3d0f0ea7d4490ca1ad5bd56bb8ee4b
+  security:
+    user-system-token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzaXN0ZW1hIiwiY3JlYXRlZCI6MTY0OTE2ODA2NDY2Nywicm9sZXMiOlsiUk9MRV9TSVNURU1BIl0sImlkIjoxfQ.ZUkQdX0fdEgyJEHbSBjwwgd6GuiPuVv3WUvAISI2_ePt0mKuAY9O3UEe-zFLJMT8HZram66he50Do2QOaMLXZA
+  process:
+    url: https://identityhomolog.acesso.io
+    decision-limiters: [-11, 11]
+    retry:
+      interval: 2000
+      max-attempts: 40
+  error:
+    retry:
+      max-attempts: 5
+      interval: 5000
+...

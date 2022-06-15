@@ -1,0 +1,455 @@
+version: "3.9"
+
+services:
+
+  smilego-kappta-auth-service:
+    image: smilego-kappta-auth-service:latest
+    container_name: smilego-kappta-auth-service
+    build: kappta-auth-service
+    restart: unless-stopped
+    ports:
+      - "8800:8800"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"      
+    environment:      
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_auth
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego         
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego  
+
+  smilego-kappta-gerencial-service:
+    image: smilego-kappta-gerencial-service:latest
+    container_name: smilego-kappta-gerencial-service
+    build: kappta-gerencial-service
+    restart: unless-stopped
+    ports:
+      - "8020:8020"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"     
+    environment:      
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_gerencial
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego         
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego   
+      KAPPTA_SERVICES_AUTENTICACAO: http://smilego-kappta-auth-service:8800
+
+  smilego-kappta-proposta-service:
+    image: smilego-kappta-proposta-service:latest
+    container_name: smilego-kappta-proposta-service
+    build: kappta-proposta-service
+    restart: unless-stopped
+    ports:
+      - "8030:8030"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"       
+    environment:      
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_proposta
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego         
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego 
+      KAPPTA_SERVICES_AUTENTICACAO: http://smilego-kappta-auth-service:8800
+      KAPPTA_SERVICES_ARQUIVO: http://smilego-kappta-arquivo-service:8820
+      KAPPTA_SERVICES_CARDS: 
+      KAPPTA_SERVICES_COLETA: http://smilego-kappta-coleta-service:8830
+      KAPPTA_SERVICES_FLUXO: http://smilego-kappta-fluxo-service:8840
+      KAPPTA_SERVICES_GERENCIAL: http://smilego-kappta-gerencial-service:8020
+      KAPPTA_SERVICES_KAMALEON:
+      KAPPTA_SERVICES_PCH:
+
+  smilego-kappta-fluxo-service:
+    image: smilego-kappta-fluxo-service:latest
+    container_name: smilego-kappta-fluxo-service
+    build: kappta-fluxo-service
+    restart: unless-stopped
+    ports:
+      - "8840:8840"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"       
+    environment:      
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_fluxo
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego         
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego 
+
+  smilego-kappta-coleta-service:
+    image: smilego-kappta-coleta-service:latest
+    container_name: smilego-kappta-coleta-service
+    build: kappta-coleta-service
+    restart: unless-stopped
+    ports:
+      - "8830:8830"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"       
+    environment:      
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_coleta
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego         
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego  
+
+  smilego-kappta-arquivo-service:
+    image: smilego-kappta-arquivo-service:latest
+    container_name: smilego-kappta-arquivo-service
+    build: kappta-arquivo-service
+    restart: unless-stopped
+    ports:
+      - "8820:8820"     
+    extra_hosts:
+      - "host.docker.internal:host-gateway"          
+    environment:      
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_arquivo
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego                           
+
+  smilego-kappta-relatorio-service:
+    image: smilego-kappta-relatorio-service:latest
+    container_name: smilego-kappta-relatorio-service
+    build: kappta-relatorio-service
+    restart: unless-stopped
+    ports:
+      - "8070:8070"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:      
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego    
+      SPRING_DATA_MONGODB_HOST: host.docker.internal
+      SPRING_DATA_MONGODB_USERNAME: smilego
+      SPRING_DATA_MONGODB_PASSWORD: smilego
+      SPRING_DATA_MONGODB_DATABASE: relatorio
+      SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE: admin 
+      KAPPTA_SERVICES_AUTENTICACAO: http://smilego-kappta-auth-service:8800
+      KAPPTA_SERVICES_ARQUIVO: http://smilego-kappta-arquivo-service:8820
+      KAPPTA_SERVICES_COLETA: http://smilego-kappta-coleta-service:8830
+      KAPPTA_SERVICES_PROPOSTA: http://smilego-kappta-proposta-service:8030
+      KAPPTA_SERVICES_GERENCIAL: http://smilego-kappta-gerencial-service:8020
+
+  smilego-kappta-mesa-service:
+    image: smilego-kappta-mesa-service:latest
+    container_name: smilego-kappta-mesa-service
+    build: kappta-mesa-service
+    restart: unless-stopped
+    ports:
+      - "8060:8060"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:      
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_mesa
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego         
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego
+      KAPPTA_SERVICES_GERENCIAL: http://smilego-kappta-gerencial-service:8020
+      KAPPTA_SERVICES_COLETA: http://smilego-kappta-coleta-service:8830
+      
+  smilego-kappta-email-service:
+    image: smilego-kappta-email-service:latest
+    container_name: smilego-kappta-email-service
+    build: kappta-email-service
+    restart: unless-stopped
+    ports:
+      - "8900:8900"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego
+      SPRING_MAIL_HOST: email-smtp.us-east-1.amazonaws.com
+      SPRING_MAIL_USERNAME: AKIA2KCSV7P3YAFDTPQD
+      SPRING_MAIL_PASSWORD: BFpy7Qcw3uhAyZRgt3eazBLJH8IavRG4BBHUFsnczZ8e
+      SPRING_MAIL_PORT: 587
+
+  smilego-kappta-sms-service:
+    image: smilego-kappta-sms-service:latest
+    container_name: smilego-kappta-sms-service
+    build: kappta-sms-service
+    restart: unless-stopped
+    ports:
+      - "8861:8861"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_sms
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego
+
+
+  smilego-kappta-call-service:
+    image: smilego-kappta-call-service:latest
+    container_name: smilego-kappta-call-service
+    build: kappta-call-service
+    ports:
+      - "8870:8870"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_call_service
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego
+
+  smilego-kappta-endereco-service:
+    image: smilego-kappta-endereco-service:latest
+    container_name: smilego-kappta-endereco-service
+    build: kappta-endereco-service
+    ports:
+      - "8860:8860"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_endereco
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego
+
+
+  smilego-kappta-adesao-service:
+    image: smilego-kappta-adesao-service:latest
+    container_name: smilego-kappta-adesao-service
+    build: kappta-adesao-service
+    ports:
+      - "8090:8090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_adesao
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego
+      KAPPTA_SERVICES_AUTENTICACAO: http://smilego-kappta-auth-service:8800
+
+  smilego-kappta-boleto-service:
+    image: smilego-kappta-boleto-service:latest
+    container_name: smilego-kappta-boleto-service
+    build: kappta-boleto-service
+    ports:
+      - "8880:8880"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  smilego-kappta-parametro-service:
+    image: smilego-kappta-parametro-service:latest
+    container_name: smilego-kappta-parametro-service
+    build: kappta-parametro-service
+    ports:
+      - "8810:8810"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_parametro
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego
+
+  smilego-kappta-pch-service:
+    image: smilego-kappta-pch-service:latest
+    container_name: smilego-kappta-pch-service
+    build: kappta-pch-service
+    ports:
+      - "8130:8130"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego
+
+  smilego-kappta-cards-service:
+    image: smilego-kappta-cards-service:latest
+    container_name: smilego-kappta-cards-service
+    build: kappta-cards-service
+    ports:
+      - "8040:8040"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_cards
+      SPRING_DATASOURCE_USERNAME: smilego
+      SPRING_DATASOURCE_PASSWORD: smilego
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: smilego
+      SPRING_RABBITMQ_PASSWORD: smilego
+
+  # smilego-kappta-b2e-service:
+  #   image: smilego-kappta-b2e-service:latest
+  #   container_name: smilego-kappta-b2e-service
+  #   build: kappta-b2e-service
+  #   ports:
+  #     - "8100:8100"       
+  #   environment:      
+  #     SPRING_PROFILES_ACTIVE: dev
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_b2e
+  #     SPRING_DATASOURCE_USERNAME: smilego
+  #     SPRING_DATASOURCE_PASSWORD: smilego   
+  #     SPRING_RABBITMQ_HOST: host.docker.internal
+  #     SPRING_RABBITMQ_PORT: 5672
+  #     SPRING_RABBITMQ_USERNAME: smilego
+  #     SPRING_RABBITMQ_PASSWORD: smilego    
+
+  # smilego-kappta-kamaleon-service:
+  #   image: smilego-kappta-kamaleon-service:latest
+  #   container_name: smilego-kappta-kamaleon-service
+  #   build: kappta-kamaleon-service
+  #   ports:
+  #     - "8120:8120"       
+  #   environment:      
+  #     SPRING_PROFILES_ACTIVE: dev
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_kamaleon
+  #     SPRING_DATASOURCE_USERNAME: smilego
+  #     SPRING_DATASOURCE_PASSWORD: smilego   
+  #     SPRING_RABBITMQ_HOST: host.docker.internal
+  #     SPRING_RABBITMQ_PORT: 5672
+  #     SPRING_RABBITMQ_USERNAME: smilego
+  #     SPRING_RABBITMQ_PASSWORD: smilego
+
+  # smilego-kappta-unico-service:
+  #   image: smilego-kappta-unico-service:latest
+  #   container_name: smilego-kappta-unico-service
+  #   build: kappta-unico-service
+  #   ports:
+  #     - "8160:8160"
+  #   environment:      
+  #     RABBITMQ_HOST: host.docker.internal
+  #     RABBITMQ_PORT: 5672
+  #     RABBITMQ_USERNAME: smilego
+  #     RABBITMQ_PASSWORD: smilego
+
+  # smilego-kappta-whitelabel-service:
+  #   image: smilego-kappta-whitelabel-service:latest
+  #   container_name: smilego-kappta-whitelabel-service
+  #   build: kappta-whitelabel-service
+  #   ports:
+  #     - "8150:8150"
+
+  # smilego-kappta-neurotech-service:
+  #   image: smilego-kappta-neurotech-service:latest
+  #   container_name: smilego-kappta-neurotech-service
+  #   build: kappta-neurotech-service
+  #   ports:
+  #     - "8050:8050"
+  #   environment:      
+  #     SPRING_PROFILES_ACTIVE: dev
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilego_neurotech
+  #     SPRING_DATASOURCE_USERNAME: smilego
+  #     SPRING_DATASOURCE_PASSWORD: smilego         
+  #     SPRING_RABBITMQ_HOST: host.docker.internal
+  #     SPRING_RABBITMQ_PORT: 5672
+  #     SPRING_RABBITMQ_USERNAME: smilego
+  #     SPRING_RABBITMQ_PASSWORD: smilego
+
+############################################################################################################################################  
+
+  # POSSUI FRONT QUE ESTÁ NO CLOUD FRONT
+  # smilego-kappta-whitelabel-service
+
+  # POSSUI O MESMO FRONT
+  # smilego-kappta-gerencial-service
+  # smilego-kappta-proposta-service
+  # smilego-kappta-mesa-service 
+  
+  #### SERVIÇOS REMOVIDOS
+
+  # smilego-kappta-configuration-service:
+  #   image: smilego-kappta-configuration-service:latest
+  #   container_name: smilego-kappta-configuration-service
+  #   build: kapta-suporte-service/kapta-cloud-services/kapta-configuration-service
+  #   ports:
+  #     - "8888:8888" 
+  #   volumes:
+  #     - ../smile-go-kapta-configurations:/home/node/app/smile-go-kapta-configurations
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: dev      
+  #     SPRING_CLOUD_CONFIG_SERVER_GIT_URI: file:///home/node/app/smile-go-kapta-configurations
+  #     SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS: 'kappta/*'
+  #     SPRING_CLOUD_CONFIG_SERVER_GIT_FORCE_PULL: 'false'
+  #     SPRING_CLOUD_CONFIG_SERVER_GIT_DELETE_UNTRACKED_BRANCHES: 'false'
+  #     SPRING_CLOUD_CONFIG_SERVER_GIT_DELETE_CLONE_ON_START: 'false'
+  #   healthcheck:
+  #     test: "curl --fail --silent http://localhost:8888/actuator/health | grep UP || exit 1"
+  #     interval: 8s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 20s      
+
+  # smilego-kappta-registry-service:
+  #   image: smilego-kappta-registry-service:latest
+  #   container_name: smilego-kappta-registry-service
+  #   build: kapta-suporte-service/kapta-cloud-services/kapta-registry-service
+  #   ports:
+  #     - "8761:8761"    
+  #   depends_on:
+  #     smilego-kappta-configuration-service:
+  #       condition: service_healthy      
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: dev
+  #     SPRING_CLOUD_CONFIG_URI: http://host.docker.internal:8888      
+  #     SPRING_APPLICATION_NAME: smilego-kappta-registry-service
+  #   healthcheck:
+  #     test: "curl --fail --silent http://localhost:8761/actuator/health | grep UP || exit 1"
+  #     interval: 8s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 20s         
+
+  # smilego-kappta-gateway-service:
+  #   image: smilego-kappta-gateway-service:latest
+  #   container_name: smilego-kappta-gateway-service
+  #   build: kapta-suporte-service/kapta-cloud-services/kapta-gateway-service
+  #   ports:
+  #     - "9000:9000"       
+  #   # depends_on:
+  #   #   smilego-kappta-registry-service:
+  #   #     condition: service_healthy       
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: dev
+  #     SPRING_CLOUD_CONFIG_URI: http://host.docker.internal:8888 
+  #     SPRING_APPLICATION_NAME: smilego-kappta-gateway-service
+  #   # healthcheck:
+  #   #   test: "curl --fail --silent http://localhost:9000/actuator/health | grep UP || exit 1"
+  #   #   interval: 8s
+  #   #   timeout: 10s
+  #   #   retries: 5
+  #   #   start_period: 20s         
+

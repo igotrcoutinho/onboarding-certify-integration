@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+
+  nginx:
+    restart: unless-stopped
+    build: src/main/resources/kappta-nginx-gateway
+    ports:
+      - 80:80    
+      - 81:81
+      - 82:82
+    volumes:
+      - ./kappta-fronts/kappta-front-principal/dist/app-capana:/srv/smilego-kappta-front-principal
+      - ./kappta-fronts/kappta-front-principal/dist/externo-capana:/srv/smilego-kappta-front-principal-externo
+    extra_hosts:
+      - "host.docker.internal:host-gateway"      
+
+# volumes:
+#   mydata:
+#   dbdata:      

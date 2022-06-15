@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: smilego
+      MONGO_INITDB_ROOT_PASSWORD: smilego
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.9.13-management
+    restart: unless-stopped
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: smilego
+      RABBITMQ_DEFAULT_PASS: smilego
+
+  smilego-kappta-postgres:
+    image: smilego-kappta-postgres:11-alpine
+    build: src/main/resources/database
+    restart: unless-stopped
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: smilego
+      POSTGRES_USER: smilego
+      POSTGRES_PASSWORD: smilego
+      PGDATA: /tmp/pg_data/
+    volumes:
+      -   ./src/main/resources/database/postgresql.conf:/etc/postgresql/postgresql.conf
