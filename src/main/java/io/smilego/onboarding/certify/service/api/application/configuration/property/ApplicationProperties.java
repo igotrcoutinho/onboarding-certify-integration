@@ -10,6 +10,8 @@ public class ApplicationProperties {
 
     private String url;
 
+    private String costumerId;
+
     private ProcessProperties process = new ProcessProperties();
     private AuthenticationProperties authentication = new AuthenticationProperties();
     private ErrorProperties error = new ErrorProperties();
@@ -50,6 +52,10 @@ public class ApplicationProperties {
     public String getUrl() {  return url; }
 
     public void setUrl(String url) { this.url = url; }
+
+    public String getCostumerId() {  return costumerId; }
+
+    public void CostumerId(String costumerId) { this.costumerId = costumerId; }
 
     @Override
     public String toString() {

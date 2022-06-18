@@ -27,6 +27,9 @@ public class ReceiveRequest implements Serializable {
     @NonNull
     private Document document;
 
+    @NonNull
+    private Face face;
+
     public String getCpf() {
         return cpf;
     }
@@ -51,6 +54,10 @@ public class ReceiveRequest implements Serializable {
         return document;
     }
 
+    public Face getFace() {
+        return face;
+    }
+
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
@@ -69,6 +76,10 @@ public class ReceiveRequest implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setFace(Face face) {
+        this.face = face;
     }
 
     public void setDocument(Document document) {
@@ -101,6 +112,9 @@ public class ReceiveRequest implements Serializable {
         @NonNull
         private String imageFront;
 
+        @NonNull
+        private String imageBack;
+
         public Integer getDocumentType() {
             return documentType;
         }
@@ -119,6 +133,10 @@ public class ReceiveRequest implements Serializable {
 
         public String getImageFront() {
             return imageFront;
+        }
+
+        public String getImageBack() {
+            return imageBack;
         }
 
         public void setDocumentType(Integer documentType) {
@@ -141,10 +159,28 @@ public class ReceiveRequest implements Serializable {
             this.imageFront = imageFront;
         }
 
+        public void setImageBack(String imageBack) {
+            this.imageBack = imageBack;
+        }
+
         @Override
         public String toString() {
             return "documentType=[" + documentType + "], number="
                     + number + ", issuingAgency=" + issuingAgency + ", issuingState=" + issuingState + " imageFront=" + StringUtils.truncate(imageFront, 100);
+        }
+
+    }
+    public static class Face implements Serializable {
+
+        @NonNull
+        private String image;
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(@NonNull String image) {
+            this.image = image;
         }
 
     }

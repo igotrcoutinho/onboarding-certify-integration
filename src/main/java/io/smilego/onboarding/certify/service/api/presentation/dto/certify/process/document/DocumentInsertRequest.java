@@ -10,6 +10,7 @@ import java.util.Arrays;
 public class DocumentInsertRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private String number;
     private Type type;
 
     @JsonProperty("imagebase64")
@@ -17,13 +18,14 @@ public class DocumentInsertRequest implements Serializable {
 
     public DocumentInsertRequest() { }
 
-    public DocumentInsertRequest(Type type, String image) {
+    public DocumentInsertRequest(Type type, String image, String number) {
         this.type = type;
         this.image = image;
+        this.number = number;
     }
 
-    public static DocumentInsertRequest of(Type type, String image) {
-        return new DocumentInsertRequest(type, image);
+    public static DocumentInsertRequest of(Type type, String image, String number) {
+        return new DocumentInsertRequest(type, image, number);
     }
 
     public Type getType() {
@@ -42,9 +44,21 @@ public class DocumentInsertRequest implements Serializable {
         this.image = image;
     }
 
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
     @JsonProperty("type")
     private String getTypeId() {
         return type.id();
+    }
+
+    public String getTypeKey() {
+        return type.key();
     }
 
     @Override
@@ -52,51 +66,61 @@ public class DocumentInsertRequest implements Serializable {
         return "type=" + type + ", imagem=" + StringUtils.truncate(image, 100);
     }
 
+    public static enum TypeSide {
+        FRONT,
+        BACK,
+        ;
+    }
     public static enum Type {
-        FACE("1"),
-        RG("2"),
-        RG_FRENTE("501"),
-        RG_VERSO("502"),
-        CPF("3"),
-        CNH("4"),
-        CNH_FRENTE("401"),
-        CNH_VERSO("402"),
-        CRM_FRENTE("503"),
-        CRM_VERSO("504"),
-        IDENTIDADE_MILITAR_FRENTE("505"),
-        IDENTIDADE_MILITAR_VERSO("506"),
-        COMPROVANTE_RENDA("5"),
-        COMPROVANTE_ENDEREÇO("6"),
-        IMPOSTO_RENDA("7"),
-        CERTIDÃO_CASAMENTO("8"),
-        CERTIDÃO_ÓBITO("9"),
-        PASSAPORTE("12"),
-        CARTÃO_CNPJ("13"),
-        CONTRATO_SOCIAL("14"),
-        CARTEIRA_TRABALHO("20"),
-        PAC("21"),
-        CTPS("22"),
-        IDENTIDADE_CLASSE("24"),
-        CERTIDÃO_NASCIMENTO("25"),
-        TAD("107"),
-        ASSINATURA_DIGITAL("112"),
-        TERMO_CONSENTIMENTO("114"),
-        VOUCHER("115"),
-        PROPOSTA("300"),
-        PROPOSTA_CONTRATO("301"),
-        PROPOSTA_SEGURO("302"),
-        PROPOSTA_GARANTIA("303"),
-        OUTROS_5("994"),
-        OUTROS_4("995"),
-        OUTROS_3("996"),
-        OUTROS_2("997"),
-        OUTROS_1("998"),
-        OUTROS("999");
+        FACE("1", "", TypeSide.FRONT),
+        RG("2", "pessoa.documento.rg.numero", TypeSide.FRONT),
+        RG_FRENTE("501", "pessoa.documento.rg.numero", TypeSide.FRONT),
+        RG_VERSO("501", "pessoa.documento.rg.numero", TypeSide.BACK),
+        CPF("3", "pessoa.documento.cpf.numero", TypeSide.FRONT),
+        CNH("4", "pessoa.documento.cnh.numero", TypeSide.FRONT),
+        CNH_FRENTE("401", "pessoa.documento.cnh.numero", TypeSide.FRONT),
+        CNH_VERSO("401", "pessoa.documento.cnh.numero", TypeSide.BACK),
+        CRM_FRENTE("503", "", TypeSide.FRONT),
+        CRM_VERSO("503", "", TypeSide.BACK),
+        IDENTIDADE_MILITAR_FRENTE("505", "pessoa.documento.identidadeMilitar.numero", TypeSide.FRONT),
+        IDENTIDADE_MILITAR_VERSO("505", "pessoa.documento.identidadeMilitar.numero", TypeSide.BACK),
+        COMPROVANTE_RENDA("5", "pessoa.documento.comprovanteRenda.numero", TypeSide.FRONT),
+        COMPROVANTE_ENDERECO("6", "pessoa.documento.comprovanteResidencia.numero", TypeSide.FRONT),
+        IMPOSTO_RENDA("7", "", TypeSide.FRONT),
+        CERTIDÃO_CASAMENTO("8", "", TypeSide.FRONT),
+        CERTIDÃO_ÓBITO("9", "", TypeSide.FRONT),
+        PASSAPORTE_FRENTE("12", "pessoa.documento.passaporte.numero", TypeSide.FRONT),
+        PASSAPORTE_VERSO("12", "pessoa.documento.passaporte.numero", TypeSide.BACK),
+        CARTÃO_CNPJ("13", "", TypeSide.FRONT),
+        CONTRATO_SOCIAL("14", "", TypeSide.FRONT),
+        CARTEIRA_TRABALHO("20", "", TypeSide.FRONT),
+        PAC("21", "", TypeSide.FRONT),
+        CTPS_FRENTE("22", "pessoa.documento.ctps", TypeSide.FRONT),
+        CTPS_VERSO("22", "pessoa.documento.ctps", TypeSide.BACK),
+        IDENTIDADE_CLASSE_FRENTE("24", "pessoa.documento.conselhoClasse.numero", TypeSide.FRONT),
+        IDENTIDADE_CLASSE_VERSO("24", "pessoa.documento.conselhoClasse.numero", TypeSide.BACK),
+        CERTIDÃO_NASCIMENTO("25", "", TypeSide.FRONT),
+        TAD("107", "", TypeSide.FRONT),
+        ASSINATURA_DIGITAL("112", "", TypeSide.FRONT),
+        TERMO_CONSENTIMENTO("114", "", TypeSide.FRONT),
+        VOUCHER("115", "", TypeSide.FRONT),
+        PROPOSTA("300", "", TypeSide.FRONT),
+        PROPOSTA_CONTRATO("301", "", TypeSide.FRONT),
+        PROPOSTA_SEGURO("302", "", TypeSide.FRONT),
+        PROPOSTA_GARANTIA("303", "", TypeSide.FRONT),
+        OUTROS("999", "pessoa.documento.outros.numero", TypeSide.FRONT),
+        OUTROS_FRENTE("999", "pessoa.documento.outros.numero", TypeSide.FRONT),
+        OUTROS_VERSO("999", "pessoa.documento.outros.numero", TypeSide.BACK),
+        ;
 
         private String id;
+        private String key;
+        private TypeSide typeSide;
 
-        private Type(String id) {
+        private Type(String id, String key, TypeSide typeSide) {
             this.id = id;
+            this.key = key;
+            this.typeSide = typeSide;
         }
 
         public static Type of(String id) {
@@ -107,6 +131,13 @@ public class DocumentInsertRequest implements Serializable {
     
         public String id() {
             return this.id;
+        }
+        public String key() {
+            return this.key;
+        }
+
+        public TypeSide typeSide() {
+            return this.typeSide;
         }
 
     }

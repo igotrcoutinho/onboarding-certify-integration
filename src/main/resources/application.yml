@@ -24,6 +24,7 @@ kappta-services:
 
 certify:
   url: https://gateway.certfy.tech
+  costumerId: c84b348e-cef6-4675-bfae-c875adb8187c
   authentication:
     apiKey: 1d3d0f0ea7d4490ca1ad5bd56bb8ee4b
   security:

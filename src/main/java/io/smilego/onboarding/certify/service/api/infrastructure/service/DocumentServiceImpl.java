@@ -24,23 +24,23 @@ public class DocumentServiceImpl implements DocumentService {
     private ApplicationLogger logger;
 
     private static final Map<String, DocumentInsertRequest.Type> documentosSuportados = Stream.of(new Object[][] {
-        { "pessoa.documento.rg.frente", DocumentInsertRequest.Type.RG_FRENTE },
-        { "pessoa.documento.rg.verso", DocumentInsertRequest.Type.RG_VERSO },
-        { "pessoa.documento.cnh.frente", DocumentInsertRequest.Type.CNH_FRENTE },
-        { "pessoa.documento.cnh.verso", DocumentInsertRequest.Type.CNH_VERSO },
-        { "pessoa.documento.identidadeMilitar.frente", DocumentInsertRequest.Type.IDENTIDADE_MILITAR_FRENTE },
-        { "pessoa.documento.identidadeMilitar.verso", DocumentInsertRequest.Type.IDENTIDADE_MILITAR_VERSO },
-        { "pessoa.documento.ctps.frente", DocumentInsertRequest.Type.CTPS },
-        { "pessoa.documento.ctps.verso", DocumentInsertRequest.Type.CTPS },
-        { "pessoa.documento.ctps.ultimoRegistro", DocumentInsertRequest.Type.CTPS },
-        { "pessoa.documento.comprovanteRenda", DocumentInsertRequest.Type.COMPROVANTE_RENDA },
-        { "pessoa.documento.comprovanteResidencia", DocumentInsertRequest.Type.COMPROVANTE_ENDEREÇO },
-        { "pessoa.documento.rne.frente", DocumentInsertRequest.Type.OUTROS },
-        { "pessoa.documento.rne.verso", DocumentInsertRequest.Type.OUTROS },
-        { "pessoa.documento.passaporte.frente", DocumentInsertRequest.Type.PASSAPORTE },
-        { "pessoa.documento.passaporte.verso", DocumentInsertRequest.Type.PASSAPORTE },
-        { "pessoa.documento.conselhoClasse.frente", DocumentInsertRequest.Type.IDENTIDADE_CLASSE },
-        { "pessoa.documento.conselhoClasse.verso", DocumentInsertRequest.Type.IDENTIDADE_CLASSE }
+        { "pessoa.documento.rg.frente", Type.RG_FRENTE },
+        { "pessoa.documento.rg.verso", Type.RG_VERSO },
+        { "pessoa.documento.cnh.frente", Type.CNH_FRENTE },
+        { "pessoa.documento.cnh.verso", Type.CNH_VERSO },
+        { "pessoa.documento.identidadeMilitar.frente", Type.IDENTIDADE_MILITAR_FRENTE },
+        { "pessoa.documento.identidadeMilitar.verso", Type.IDENTIDADE_MILITAR_VERSO },
+        { "pessoa.documento.ctps.frente", Type.CTPS_FRENTE},
+        { "pessoa.documento.ctps.verso", Type.CTPS_FRENTE},
+        { "pessoa.documento.ctps.ultimoRegistro", Type.CTPS_FRENTE},
+        { "pessoa.documento.comprovanteRenda", Type.COMPROVANTE_RENDA },
+        { "pessoa.documento.comprovanteResidencia", Type.COMPROVANTE_ENDERECO},
+        { "pessoa.documento.rne.frente", Type.OUTROS_FRENTE },
+        { "pessoa.documento.rne.verso", Type.OUTROS_VERSO },
+        { "pessoa.documento.passaporte.frente", Type.PASSAPORTE_FRENTE},
+        { "pessoa.documento.passaporte.verso", Type.PASSAPORTE_VERSO},
+        { "pessoa.documento.conselhoClasse.frente", Type.IDENTIDADE_CLASSE_FRENTE},
+        { "pessoa.documento.conselhoClasse.verso", Type.IDENTIDADE_CLASSE_VERSO}
     }).collect(Collectors.toMap(data -> (String) data[0], data -> (DocumentInsertRequest.Type) data[1]));
 
     @Override
@@ -57,11 +57,12 @@ public class DocumentServiceImpl implements DocumentService {
 
             try {
                 Type type = documentosSuportados.get(key);
+                String documentNumber = getDocumentNumber(properties, key);
 
                 String image = arquivoService.downloadAsBase64(Integer.parseInt(value))
                         .orElseThrow(() -> new DownloadFileException("Não foi possível efetuar o download do arquivo id '" + value + "'"));
 
-                DocumentInsertRequest request = DocumentInsertRequest.of(type, image);
+                DocumentInsertRequest request = DocumentInsertRequest.of(type, image, documentNumber);
 
                 requests.add(request);
             } catch (DownloadFileException e) {
@@ -77,4 +78,16 @@ public class DocumentServiceImpl implements DocumentService {
 
         return requests;
     }
+
+    private String getDocumentNumber(List<Property> properties, String key){
+        for (Property property: properties) {
+            if(property.getKey().equals(key)){
+                return property.getValue();
+            }
+        }
+        return "";
+    }
+
+
+
 }
