@@ -1,5 +1,6 @@
 package io.smilego.onboarding.certify.service.api.application.configuration.property;
 
+import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.TreeSet;
 
@@ -83,7 +84,7 @@ public class ApplicationProperties {
     @ConfigurationProperties("process")
     public static class ProcessProperties {
         private String url;
-        private TreeSet<Integer> decisionLimiters = new TreeSet<>();
+        private TreeSet<BigDecimal> decisionLimiters = new TreeSet<>();
         private ProcessRetryProperties retry = new ProcessRetryProperties();
 
         public String getUrl() {
@@ -94,11 +95,11 @@ public class ApplicationProperties {
             this.url = url;
         }
 
-        public TreeSet<Integer> getDecisionLimiters() {
+        public TreeSet<BigDecimal> getDecisionLimiters() {
             return decisionLimiters;
         }
 
-        public void setDecisionLimiters(TreeSet<Integer> decisionLimiters) {
+        public void setDecisionLimiters(TreeSet<BigDecimal> decisionLimiters) {
             this.decisionLimiters = decisionLimiters;
         }
 

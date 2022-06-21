@@ -8,8 +8,7 @@ import java.util.List;
 public interface ConsultaService {
 
     public void iniciarProcesso(Processo processo, List<DocumentInsertRequest> documentos);
-    //public void enviarDocumentos(Processo processo, List<?> documentos);
-    //public void executarProcesso(Processo processo);
-    //public void verificarProcesso(Processo processo);
+    public void executarProcesso(Processo processo);
+    public void verificarProcesso(Processo processo);
 
 }
