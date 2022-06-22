@@ -193,7 +193,7 @@ public class ConsultaServiceImpl implements ConsultaService {
         receiveRequest.setName(createRequest.getInformation().getName());
         receiveRequest.setEmail(createRequest.getInformation().getEmail());
         receiveRequest.setCpf(createRequest.getInformation().getDocument());
-        receiveRequest.seteOnboardingType(1);
+        receiveRequest.seteOnboardingType(ReceiveRequest.OnboardingType.CPF);
         receiveRequest.setCostumerId(applicationProperties.getCostumerId());
         ReceiveRequest.Face face = new ReceiveRequest.Face();
         face.setImage(createRequest.getFaceImage());
@@ -201,6 +201,7 @@ public class ConsultaServiceImpl implements ConsultaService {
         ReceiveRequest.Document document = new ReceiveRequest.Document();
         try {
             documentos.forEach(d->{
+                document.setDocumentType(d.getType().documentType());
                 switch (d.getType().typeSide()){
                     case FRONT:
                         document.setImageFront(d.getImage());

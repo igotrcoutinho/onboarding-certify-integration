@@ -5,11 +5,11 @@ micronaut:
   server:
     port: 8161
   executors:
-    unico-listener:
+    certify-listener:
       type: fixed
       number-of-threads: 20
 rabbitmq:
-  host: ec2-18-188-120-138.us-east-2.compute.amazonaws.com
+  host: localhost #ec2-18-188-120-138.us-east-2.compute.amazonaws.com
   port: 5672
   username: smilego
   password: smilego

@@ -8,7 +8,7 @@ import io.smilego.onboarding.certify.service.api.infrastructure.amqp.rabbitmq.co
 import io.smilego.onboarding.certify.service.api.presentation.dto.kappta.KapptaRequest;
 import jakarta.inject.Inject;
 
-@RabbitListener(executor = "unico-listener")
+@RabbitListener(executor = "certify-listener")
 public class RabbitMQListener {
 
     @Inject
